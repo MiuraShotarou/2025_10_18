@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 /// <summary>
 /// ゲーム全体で保持する必要のあるデータを格納する。
@@ -7,6 +8,10 @@ public class GameDataManager : MonoBehaviour
 {
     public GameObject PlayerObj;
     public InputSystem_Actions InputSystem;
+    public Tilemap Tilemap;
+    public TileBase NormaltileBase;
+    public TileBase AttackTileBase;
+    public int TurnCount;
     public BulletType BulletType;
     public static GameDataManager Instance { get; private set; }
     private void Awake()
@@ -30,4 +35,5 @@ public class GameDataManager : MonoBehaviour
             InputSystem.Enable();
         }
     }
+    //<パラメーター関連>
 }

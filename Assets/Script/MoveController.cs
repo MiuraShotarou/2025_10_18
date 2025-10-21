@@ -28,8 +28,22 @@ public class MoveController : MonoBehaviour
             if (_move != context.ReadValue<Vector2>())
             {
                 _move = context.ReadValue<Vector2>();
-                int x = (int)_move.x;
-                int y = (int)_move.y;
+                if (_move == new Vector2(1, 0))//D入力
+                {
+                    _playerObj.transform.eulerAngles = new Vector3(0, 0, 270);
+                }
+                else if (_move == new Vector2(-1, 0))
+                {
+                    _playerObj.transform.eulerAngles = new Vector3(0, 0, 90);
+                }
+                else if (_move == new Vector2(0, 1))//W入力
+                {
+                    _playerObj.transform.eulerAngles = new Vector3(0, 0, 0);
+                }
+                else if (_move == new Vector2(0, -1))
+                {
+                    _playerObj.transform.eulerAngles = new Vector3(0, 0, 180);
+                }
                 _time = 0;
             }
         }
