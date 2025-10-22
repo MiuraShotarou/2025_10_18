@@ -11,6 +11,6 @@ public class EnemyGenerator : MonoBehaviour
     void Start()
     {
         //どこかにオブジェクト生成のポジションを保持しておく必要がある
-        GameObject enemyObj = Instantiate(GameDataManager.Instance.EnemyTupleArray.FirstOrDefault(enemy => enemy.name.Contains(_testGenerateEnemyName)).obj, _testGeneratePosition, Quaternion.identity);
+        // GameObject enemyObj = Instantiate(GameDataManager.Instance.EnemyTupleArray.FirstOrDefault(enemy => enemy.name.Contains(_testGenerateEnemyName)).obj, _testGeneratePosition, Quaternion.identity);
     }
 }

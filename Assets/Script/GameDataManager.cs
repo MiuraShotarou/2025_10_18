@@ -14,7 +14,6 @@ public class GameDataManager : MonoBehaviour
     public TileBase NormalTileBase;
     public TileBase PredictedAttackTileBase;
     public TileBase AttackTileBase;
-    public int TurnCount { set => InGameManager.SetTurnCount(value); get => InGameManager.GetTurnCount();}
     public (string name, GameObject obj)[] EnemyTupleArray;
     private InputSystem_Actions InputSystem;
     public static GameDataManager Instance { get; private set; }

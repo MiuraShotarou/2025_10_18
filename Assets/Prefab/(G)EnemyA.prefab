@@ -106,6 +106,7 @@ MonoBehaviour:
   BulletType: 0
   Data: {fileID: 11400000, guid: 20818e62cf612484a8b4b60f61fced31, type: 2}
   CurrentPos: {x: 0, y: 0, z: 0}
+  MovePos: {x: 0, y: 0, z: 0}
   Name: 
   AttackRange: 
   MoveRange: 0

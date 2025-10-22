@@ -39,7 +39,6 @@ public class PlayerUnit : UnitBase
     protected override void Shoot()
     {
         base.Shoot();
-        GameDataManager.Instance.TurnCount++;
     }
     /// <summary> NewInputSystemからWASD入力を通して一度だけ呼ばれるメソッド</summary>
     /// <param name="context"></param>
@@ -75,6 +74,7 @@ public class PlayerUnit : UnitBase
                 //攻撃予測地点にタイルをセットする
                 GameDataManager.Instance.Tilemap.SetTile(_attackTilePos, GameDataManager.Instance.PredictedAttackTileBase);
                 _beforeTilePos = _attackTilePos;
+                GameDataManager.Instance.InGameManager.TurnCount++;
                 _time = 0;
             }
         }
