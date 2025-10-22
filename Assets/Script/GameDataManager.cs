@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -7,12 +8,15 @@ using UnityEngine.Tilemaps;
 public class GameDataManager : MonoBehaviour
 {
     public GameObject PlayerObj;
-    public InputSystem_Actions InputSystem;
+    public GameObject[] EnemyObjectArray;
+    public InGameManager InGameManager;
     public Tilemap Tilemap;
-    public TileBase NormaltileBase;
+    public TileBase NormalTileBase;
+    public TileBase PredictedAttackTileBase;
     public TileBase AttackTileBase;
-    public int TurnCount;
-    public BulletType BulletType;
+    public int TurnCount { set => InGameManager.SetTurnCount(value); get => InGameManager.GetTurnCount();}
+    public (string name, GameObject obj)[] EnemyTupleArray;
+    private InputSystem_Actions InputSystem;
     public static GameDataManager Instance { get; private set; }
     private void Awake()
     {
@@ -26,6 +30,7 @@ public class GameDataManager : MonoBehaviour
             Destroy(gameObject);
         }
         InputSystem = new InputSystem_Actions();
+        EnemyTupleArray = EnemyObjectArray.Select(enemy => (enemy.name, enemy)).ToArray();
     }
 
     private void OnEnable()
