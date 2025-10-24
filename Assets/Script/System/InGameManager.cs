@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 /// <summary> ゲームシステム全般 </summary>
 public class InGameManager : MonoBehaviour
@@ -15,12 +16,11 @@ public class InGameManager : MonoBehaviour
     {
         StageIndex = 0;
     }
-
+    /// <summary> シーンを切り替える </summary>
     public void NextStage()
     {
         StageIndex++;
-        Debug.Log($"{GameDataManager.Instance.StageSceneArray[1]}");
-        SceneManager.LoadScene(GameDataManager.Instance.StageSceneArray[StageIndex]);
+        SceneManager.LoadScene($"Stage{StageIndex}");
     }
 
     public void Restart()

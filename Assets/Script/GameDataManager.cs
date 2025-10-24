@@ -1,22 +1,22 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// ゲーム全体で保持する必要のあるデータを格納する。
 /// </summary>
 public class GameDataManager : MonoBehaviour
 {
-    public GameObject PlayerObj;
     [HideInInspector] public GameObject[] EnemyObjectArray;
-    public InGameManager InGameManager;
+    [HideInInspector] public InGameManager InGameManager;
+    [HideInInspector] public GameObject PlayerObj;
     public Tilemap Tilemap;
     public TileBase NormalTileBase;
     public TileBase PredictedAttackTileBase;
     public TileBase AttackTileBase;
     public (string name, GameObject obj)[] EnemyTupleArray;
     private InputSystem_Actions InputSystem;
-    [HideInInspector] public string[] StageSceneArray = {"Stage0", "Stage1"};
     public static GameDataManager Instance { get; private set; }
     private void Awake()
     {
@@ -30,9 +30,23 @@ public class GameDataManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        Initialize(); //シーンのロード時にも
+        SceneManager.activeSceneChanged += ChangeSceneLoaded;
+        InGameManager.GetComponent<InGameManager>();
         InputSystem = new InputSystem_Actions();
+    }
+    
+    void Initialize()
+    {
+        Debug.Log("0");
+        PlayerObj = GameObject.FindWithTag("Player");
         EnemyObjectArray = FindObjectsByType<EnemyUnit>(FindObjectsSortMode.None).Select(unit => unit.gameObject).ToArray();
         EnemyTupleArray = EnemyObjectArray.Select(enemy => (enemy.name, enemy)).ToArray();
+    }
+
+    void ChangeSceneLoaded(Scene current, Scene next)
+    {
+        Initialize();
     }
 
     private void OnEnable()

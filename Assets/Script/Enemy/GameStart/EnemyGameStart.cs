@@ -12,6 +12,10 @@ public class EnemyGameStart : EnemyDataBase
     void DeathBase(EnemyUnit unit)
     {
         unit.gameObject.GetComponent<SpriteRenderer>().DOFade(0f, 0.5f).SetLoops(-1, LoopType.Yoyo);
-        GameDataManager.Instance.InGameManager.NextStage(); //実質ゲームスタート
+        DOTween.Sequence().AppendInterval(10f).AppendCallback(() =>
+            {
+                DOTween.KillAll();
+                GameDataManager.Instance.InGameManager.NextStage();
+            }).Play();
     }
 }

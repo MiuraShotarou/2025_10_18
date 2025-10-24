@@ -15,6 +15,7 @@ public class PlayerUnit : UnitBase
     {
         GameDataManager.Instance.Tilemap.SetTile(_attackTilePos, GameDataManager.Instance.AttackTileBase);
         _playerObj = GameDataManager.Instance.PlayerObj;
+        Debug.Log("1" + _playerObj);
         //Test
         BulletType = BulletType.Normal;
         _attackTilePos = new Vector3Int(0, _attackRange, 0);
@@ -34,6 +35,11 @@ public class PlayerUnit : UnitBase
         {
             Shoot();
         }
+        //テスト用
+        if (!_playerObj)
+        {
+            Debug.Log("");
+        }
     }
     
     protected override void Shoot()
@@ -50,7 +56,6 @@ public class PlayerUnit : UnitBase
     {
         if (context.performed)
         {
-            Debug.Log(GameDataManager.Instance.EnemyObjectArray[0].name);
             if (_move != context.ReadValue<Vector2>())
             {
                 _move = context.ReadValue<Vector2>();

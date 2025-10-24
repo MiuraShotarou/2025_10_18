@@ -104,8 +104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyUnit
   BulletType: 0
-  Data: {fileID: 11400000, guid: 20818e62cf612484a8b4b60f61fced31, type: 2}
-  CurrentPos: {x: 0, y: 0, z: 0}
+  Data: {fileID: 11400000, guid: 50e3f77514f2722489648f945d27dee0, type: 2}
   MovePos: {x: 0, y: 0, z: 0}
   Name: 
   AttackRange: 
