@@ -1,21 +1,21 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 /// <summary> プレイヤーの機能を実装するクラス </summary>
 public class PlayerUnit : UnitBase
 {
     [SerializeField] int _attackRange;
     [SerializeField, Range(0, 2)] float _inputDuration;
-    // Vector3Int _beforeTilePos; //Shoot, OnMoveの際に更新
+    Vector3Int _beforeTilePos; //Shoot, OnMoveの際に更新
     Vector2 _move;
     float _time;
     void Start()
     {
         BulletType = BulletType.Normal;
-        Muzzle = transform.GetChild(0);
-        Debug.Log(Muzzle.name);
-        // _beforeTilePos = _attackTilePos;
-        GameDataManager.Instance.Tilemap.SetTile(Vector3Int.RoundToInt(Muzzle.position), GameDataManager.Instance.PredictedAttackTileBase);
+        _attackTilePos = new Vector3Int(0, _attackRange, 0);
+        _beforeTilePos = _attackTilePos;
+        GameDataManager.Instance.Tilemap.SetTile(_attackTilePos, GameDataManager.Instance.PredictedAttackTileBase);
     }
     void Update()
     {
@@ -36,9 +36,9 @@ public class PlayerUnit : UnitBase
     protected override void Shoot()
     {
         base.Shoot();
-        if (GameDataManager.Instance.EnemyObjectArray.Any(obj => obj.transform.position == Vector3Int.RoundToInt(Muzzle.position)))
+        if (GameDataManager.Instance.EnemyObjectArray.Any(obj => obj.transform.position == _attackTilePos))
         {
-            GameDataManager.Instance.EnemyObjectArray.FirstOrDefault(obj => obj.transform.position == Vector3Int.RoundToInt(Muzzle.position)).GetComponent<EnemyUnit>().Death();
+            GameDataManager.Instance.EnemyObjectArray.FirstOrDefault(obj => obj.transform.position == _attackTilePos).GetComponent<EnemyUnit>().Death();
         }
     }
     /// <summary> NewInputSystemからWASD入力を通して一度だけ呼ばれるメソッド</summary>
@@ -49,33 +49,36 @@ public class PlayerUnit : UnitBase
         {
             if (_move != context.ReadValue<Vector2>())
             {
-                Debug.Log(Vector3Int.RoundToInt(transform.GetChild(0).position));
+                // Debug.Log(Vector3Int.RoundToInt(transform.GetChild(0).position));
                 _move = context.ReadValue<Vector2>();
-                //移動後、元の攻撃予測地点から攻撃用のタイルを取り除く
-                GameDataManager.Instance.Tilemap.SetTile(Vector3Int.RoundToInt(transform.GetChild(0).position) ,GameDataManager.Instance.NormalTileBase);
                 if (_move == new Vector2(1, 0))//D入力
                 {
                     transform.eulerAngles = new Vector3(0, 0, 270);
-                    // _attackTilePos = new Vector3Int(_attackRange, 0, 0);
+                    _attackTilePos = new Vector3Int(_attackRange, 0, 0);
                 }
                 else if (_move == new Vector2(-1, 0))//A入力
                 {
                     transform.eulerAngles = new Vector3(0, 0, 90);
-                    // _attackTilePos = new Vector3Int(_attackRange * -1, 0, 0);
+                    _attackTilePos = new Vector3Int(_attackRange * -1, 0, 0);
                 }
                 else if (_move == new Vector2(0, 1))//W入力
                 {
                     transform.eulerAngles = new Vector3(0, 0, 0);
-                    // _attackTilePos = new Vector3Int(0, _attackRange, 0);
+                    _attackTilePos = new Vector3Int(0, _attackRange, 0);
                 }
                 else if (_move == new Vector2(0, -1))//S入力
                 {
                     transform.eulerAngles = new Vector3(0, 0, 180);
-                    // _attackTilePos = new Vector3Int(0, _attackRange * -1, 0);
+                    _attackTilePos = new Vector3Int(0, _attackRange * -1, 0);
                 }
-                //回転後にマズルのポジションへタイルをセットする
-                GameDataManager.Instance.Tilemap.SetTile(Vector3Int.RoundToInt(transform.GetChild(0).position), GameDataManager.Instance.PredictedAttackTileBase);
                 GameDataManager.Instance.InGameManager.TurnCount++;
+                Debug.Log($"{_attackTilePos}");
+                //移動前、元の攻撃予測地点から攻撃用のタイルを取り除く
+                GameDataManager.Instance.Tilemap.SetTile(_beforeTilePos == Vector3Int.zero? new Vector3Int(0, _attackRange, 0) : _beforeTilePos //タイムラグによるバグ防止
+                    ,GameDataManager.Instance.NormalTileBase);
+                //回転後にマズルのポジションへタイルをセットする
+                GameDataManager.Instance.Tilemap.SetTile(_attackTilePos, GameDataManager.Instance.PredictedAttackTileBase);
+                _beforeTilePos = _attackTilePos;
                 _time = 0;
             }
         }
