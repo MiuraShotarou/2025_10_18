@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 370ded8c1a47beb40a2912d564376a17, type: 3}
+  m_Script: {fileID: 11500000, guid: 74f0c1883b85b6148b05008fec32de58, type: 3}
   m_Name: EnemyA
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyScriptable
-  Name: A
-  AttackRange: 
-  MoveRange: 1
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyA

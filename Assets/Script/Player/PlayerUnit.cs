@@ -1,10 +1,10 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 /// <summary> プレイヤーの機能を実装するクラス </summary>
 public class PlayerUnit : UnitBase
 {
     [SerializeField] int _attackRange;
-    
     [SerializeField, Range(0, 2)] float _inputDuration;
     GameObject _playerObj;//キャッシュ
     Vector3Int _beforeTilePos; //Shoot, OnMoveの際に更新
@@ -13,11 +13,11 @@ public class PlayerUnit : UnitBase
     
     void Start()
     {
+        GameDataManager.Instance.Tilemap.SetTile(_attackTilePos, GameDataManager.Instance.AttackTileBase);
         _playerObj = GameDataManager.Instance.PlayerObj;
         //Test
         BulletType = BulletType.Normal;
         _attackTilePos = new Vector3Int(0, _attackRange, 0);
-        GameDataManager.Instance.Tilemap.SetTile(_attackTilePos, GameDataManager.Instance.AttackTileBase);
         _beforeTilePos = _attackTilePos;
     }
     void Update()
@@ -39,6 +39,10 @@ public class PlayerUnit : UnitBase
     protected override void Shoot()
     {
         base.Shoot();
+        if (GameDataManager.Instance.EnemyObjectArray.Any(obj => obj.transform.position == _attackTilePos))
+        {
+            GameDataManager.Instance.EnemyObjectArray.FirstOrDefault(obj => obj.transform.position == _attackTilePos).GetComponent<EnemyUnit>().Death();
+        }
     }
     /// <summary> NewInputSystemからWASD入力を通して一度だけ呼ばれるメソッド</summary>
     /// <param name="context"></param>
@@ -46,6 +50,7 @@ public class PlayerUnit : UnitBase
     {
         if (context.performed)
         {
+            Debug.Log(GameDataManager.Instance.EnemyObjectArray[0].name);
             if (_move != context.ReadValue<Vector2>())
             {
                 _move = context.ReadValue<Vector2>();
