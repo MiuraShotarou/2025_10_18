@@ -11,7 +11,7 @@ public class GameDataManager : MonoBehaviour
     [HideInInspector] public GameObject[] EnemyObjectArray;
     [HideInInspector] public InGameManager InGameManager;
     [HideInInspector] public GameObject PlayerObj;
-    public Tilemap Tilemap;
+    [HideInInspector] public Tilemap Tilemap;
     public TileBase NormalTileBase;
     public TileBase PredictedAttackTileBase;
     public TileBase AttackTileBase;
@@ -38,8 +38,8 @@ public class GameDataManager : MonoBehaviour
     
     void Initialize()
     {
-        Debug.Log("0");
         PlayerObj = GameObject.FindWithTag("Player");
+        Tilemap = GameObject.FindWithTag("Tilemap").GetComponent<Tilemap>();
         EnemyObjectArray = FindObjectsByType<EnemyUnit>(FindObjectsSortMode.None).Select(unit => unit.gameObject).ToArray();
         EnemyTupleArray = EnemyObjectArray.Select(enemy => (enemy.name, enemy)).ToArray();
     }

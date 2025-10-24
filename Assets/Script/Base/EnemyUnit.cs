@@ -21,8 +21,8 @@ public class EnemyUnit : UnitBase
     }
     void Advance()
     {
-        gameObject.transform.position += MovePos;
-        if (gameObject.transform.position == new Vector3(0, 0, 0))
+        transform.position += MovePos;
+        if (transform.position == new Vector3(0, 0, 0))
         {
             GameDataManager.Instance.InGameManager.Restart();
         }
@@ -36,7 +36,7 @@ public class EnemyUnit : UnitBase
 
     void DecideMovePos()
     {
-        Vector2 pos = gameObject.transform.position;
+        Vector2 pos = transform.position;
         if (pos.x < 0)
         {
             MovePos = new Vector3Int(1, 0, 0);
