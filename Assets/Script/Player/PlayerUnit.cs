@@ -31,6 +31,39 @@ public class PlayerUnit : UnitBase
         {
             Shoot();
         }
+        if (_move != Vector2.zero)
+        {
+            // Debug.Log(Vector3Int.RoundToInt(transform.GetChild(0).position));
+            if (_move == new Vector2(1, 0))//D入力
+            {
+                transform.eulerAngles = new Vector3(0, 0, 270);
+                _attackTilePos = new Vector3Int(_attackRange, 0, 0);
+                Debug.Log(_attackTilePos);
+            }
+            else if (_move == new Vector2(-1, 0))//A入力
+            {
+                transform.eulerAngles = new Vector3(0, 0, 90);
+                _attackTilePos = new Vector3Int(_attackRange * -1, 0, 0);
+            }
+            else if (_move == new Vector2(0, 1))//W入力
+            {
+                transform.eulerAngles = new Vector3(0, 0, 0);
+                _attackTilePos = new Vector3Int(0, _attackRange, 0);
+            }
+            else if (_move == new Vector2(0, -1))//S入力
+            {
+                transform.eulerAngles = new Vector3(0, 0, 180);
+                _attackTilePos = new Vector3Int(0, _attackRange * -1, 0);
+            }
+            GameDataManager.Instance.InGameManager.TurnCount++;
+            //移動前、元の攻撃予測地点から攻撃用のタイルを取り除く
+            GameDataManager.Instance.Tilemap.SetTile(_beforeTilePos == Vector3Int.zero? new Vector3Int(0, _attackRange, 0) : _beforeTilePos //タイムラグによるバグ防止
+                ,GameDataManager.Instance.NormalTileBase);
+            //回転後にマズルのポジションへタイルをセットする
+            GameDataManager.Instance.Tilemap.SetTile(_attackTilePos, GameDataManager.Instance.PredictedAttackTileBase);
+            _beforeTilePos = _attackTilePos;
+            _time = 0;
+        }
     }
     
     protected override void Shoot()
@@ -38,6 +71,7 @@ public class PlayerUnit : UnitBase
         base.Shoot();
         if (GameDataManager.Instance.EnemyObjectArray.Any(obj => obj.transform.position == _attackTilePos))
         {
+            Debug.Log($"派生先{_attackTilePos}");
             GameDataManager.Instance.EnemyObjectArray.FirstOrDefault(obj => obj.transform.position == _attackTilePos).GetComponent<EnemyUnit>().Death();
         }
     }
@@ -47,40 +81,7 @@ public class PlayerUnit : UnitBase
     {
         if (context.performed)
         {
-            if (_move != context.ReadValue<Vector2>())
-            {
-                // Debug.Log(Vector3Int.RoundToInt(transform.GetChild(0).position));
-                _move = context.ReadValue<Vector2>();
-                if (_move == new Vector2(1, 0))//D入力
-                {
-                    transform.eulerAngles = new Vector3(0, 0, 270);
-                    _attackTilePos = new Vector3Int(_attackRange, 0, 0);
-                }
-                else if (_move == new Vector2(-1, 0))//A入力
-                {
-                    transform.eulerAngles = new Vector3(0, 0, 90);
-                    _attackTilePos = new Vector3Int(_attackRange * -1, 0, 0);
-                }
-                else if (_move == new Vector2(0, 1))//W入力
-                {
-                    transform.eulerAngles = new Vector3(0, 0, 0);
-                    _attackTilePos = new Vector3Int(0, _attackRange, 0);
-                }
-                else if (_move == new Vector2(0, -1))//S入力
-                {
-                    transform.eulerAngles = new Vector3(0, 0, 180);
-                    _attackTilePos = new Vector3Int(0, _attackRange * -1, 0);
-                }
-                GameDataManager.Instance.InGameManager.TurnCount++;
-                Debug.Log($"{_attackTilePos}");
-                //移動前、元の攻撃予測地点から攻撃用のタイルを取り除く
-                GameDataManager.Instance.Tilemap.SetTile(_beforeTilePos == Vector3Int.zero? new Vector3Int(0, _attackRange, 0) : _beforeTilePos //タイムラグによるバグ防止
-                    ,GameDataManager.Instance.NormalTileBase);
-                //回転後にマズルのポジションへタイルをセットする
-                GameDataManager.Instance.Tilemap.SetTile(_attackTilePos, GameDataManager.Instance.PredictedAttackTileBase);
-                _beforeTilePos = _attackTilePos;
-                _time = 0;
-            }
+            _move = context.ReadValue<Vector2>(); //入力情報をフィールドに保存
         }
     }
 }
